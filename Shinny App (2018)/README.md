@@ -1,4 +1,4 @@
-# DataScience
+# Shiny App
 Small Shiny App and its presentation for the course "Developing Data Products" (Coursera, John Hopkins University). 
 
 Written in R using Shiny package.
