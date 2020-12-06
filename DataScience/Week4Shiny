@@ -1,0 +1,84 @@
+library(shiny)
+
+ui <- fluidPage(
+  
+  # Application title
+  titlePanel("Plant growth under 2 different treatments"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      h3("Controls"),
+      checkboxInput("Mostrar_linea", "Show trt1 mean (ticked)/trt2 mean (not ticked)", TRUE),
+      checkboxInput("Mostrar_media", "Show control group", TRUE),
+      sliderInput("sliderY", "Choose the range of weights", 3,7, value=c(3,7)),
+      selectInput("idioma", "Choose the language of the plot", c("English", "Castellano"))
+    ),
+    
+    mainPanel(
+      tabsetPanel(type = "tabs", 
+                  tabPanel(("Plot"), plotOutput("PlantPlot")),
+                  tabPanel(("Documentation"), textOutput("Texto"))
+                  
+    )
+    
+    
+  )
+))
+
+
+server <- function(input, output) {
+
+  
+  output$PlantPlot <- renderPlot({
+    if (input$Mostrar_media){
+      dataX <- PlantGrowth$group
+      dataY <- PlantGrowth$weight}
+    else {  dataX <- PlantGrowth$group[11:30]
+    dataY <- PlantGrowth$weight[11:30]
+    }
+    
+    df <- data.frame(a=dataX, b=dataY)
+    df <- droplevels(df)
+    
+    limiteX <- if (input$Mostrar_media) c(0,4) else c(0,3)
+    minY <- input$sliderY[1]
+    maxY <- input$sliderY[2]
+   
+    if (minY == maxY){
+      MostrarPlot = FALSE
+    } else MostrarPlot = TRUE
+    
+    if(input$idioma == "English"){
+      EtiquetaX = "Treatment"
+      EtiquetaY = "Weight"
+      Titulo = "Plant growth vs treatments"
+    } else {
+      EtiquetaX = "Tratamiento"
+      EtiquetaY = "Peso"
+      Titulo = "Crecimiento plantar vs tratamientos"
+    }
+      
+    
+    
+    if(MostrarPlot){
+    plot(df$a, df$b, xlab = EtiquetaX, ylab = EtiquetaY, main = Titulo, col=13, xlim = limiteX, ylim = c(minY,maxY))
+    
+    linea <- ifelse(input$Mostrar_linea, mean(PlantGrowth$weight[11:20]), mean(PlantGrowth$weight[21:30]))
+    abline(h=linea, col="blue")}
+  })
+
+  textoexplicacion = "This app show results from an experiment to compare yields (as measured by dried weight of plants) obtained under a control and two different treatments conditions. The first checkbox allows  to choose between showing the mean weight value for each treatment as a line. It uses a boolean value that checks if the first input field is ticked or not and then return a line that fits the median weight for treatment 1 (marked) or treatment 2 (not marked).\n
+                          
+                          The second function allows to choose between displaying or not the control group. It uses a boolean value that cheks the second input field and, if marked: 1) Delete the dates corresponding to the control group and 2) Create a data frame, drop it levels and modify the limits of the x axis of the plot.\n
+                          
+                          The slider allows to choose the range of weights displayed. It simply pass each element of the input to the paramether that defines the limits of the Y axis of the plot. If the the inputs are similar, it uses a boolean value to avoid diplaying the plot.\n
+                          
+                          Finally, the selectable input allows to choose the language in which the plot is displayed, with the options of english and spanish. It simply replaces the strings that the labels and the header of the plot.\n
+                          
+                          Created by Aitor Rodriguez. Source code: https://github.com/aitorrod92/DataScience/blob/master/Week4%20Shiny.R"
+  output$Texto <- renderText(textoexplicacion)
+}
+
+shinyApp(ui = ui, server = server)
+
+

@@ -1,0 +1,67 @@
+---
+title: "Assignment week 4"
+author: "Aitor Rodríguez"
+date: "3/07/2018"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
+## Experiment
+
+The following presentation show results from an experiment to compare yields (as measured by dried weight of plants) obtained under a control and two different treatments conditions.
+
+- **Raw data**
+```{r, comment=""}
+show(PlantGrowth)
+```
+## Paramethers
+- **General mean**
+```{r, echo=FALSE, comment=""}
+mean(PlantGrowth$weight)
+```
+- **Control mean and variance**
+```{r, echo=FALSE, comment=""}
+mean(PlantGrowth$weight[1:10])
+var(PlantGrowth$weight[1:10])
+```
+
+- **Treatment 1 mean and variance**
+```{r, echo=FALSE, comment=""}
+mean(PlantGrowth$weight[11:20])
+var(PlantGrowth$weight[11:20])
+```
+
+- **Treatment 2 mean and variance**
+```{r, echo=FALSE, comment=""}
+mean(PlantGrowth$weight[21:30])
+var(PlantGrowth$weight[21:30])
+```
+
+## Plot
+
+Check out the app for 4 extra visualization options: https://setito.shinyapps.io/Week4Shiny/
+
+```{r}
+plot(PlantGrowth$group, PlantGrowth$weight, xlab = "Treatment", ylab = "Weight", main = "Plant growth vs treatments", col=13)
+```
+
+
+
+
+
+## Conclusions
+1. Treatment 1 reduces the average plant growth.
+    + 0,37 kg compared with the absence of treatment and 0,87 kg compared with treatment 2.
+2. Treatment 2 increases the average plant growth.
+    + 0,49 kg compared with the absence of treatment and 0,87 kg compared with treatment 1.
+3. Treatment 1 has an equalizer effect and treatment 2, the opposite.
+    + In treatment 1, the variance it is almost the double than in control group and more than the triple than with treatment 2.
+
+- Source code: https://github.com/aitorrod92/DataScience
+
+
+
